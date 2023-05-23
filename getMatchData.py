@@ -1,8 +1,9 @@
+import config
 import requests
 import urllib, json
 import csv
 
-api_key = "RGAPI-91976959-c85a-414f-a502-1fddc6123776"
+api_key = config.API_KEY
 BLUE = 0
 RED = 1
 
@@ -53,11 +54,3 @@ for ban in team_data[RED]["bans"]:
 
 print("blue side: ", blue_side)
 print("red side: ", red_side)
-
-
-f = open('champion.json')
-  
-# returns JSON object as 
-# a dictionary
-data = json.load(f)
-print(data)
