@@ -6,6 +6,19 @@ from PIL import Image
 from io import BytesIO
 import pandas as pd
 from keras.models import load_model
+import os
+import sys
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS2
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 def get_champ_name(id):
     for champ in champions:
@@ -37,7 +50,7 @@ data_dragon_data = requests.get(data_dragon_url).json()
 champions = data_dragon_data["data"]
 
 champs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-model = load_model("tfmodel")
+model = load_model(resource_path("tfmodel"))
 positions = ["blue_pick_1", "blue_pick_2", "blue_pick_3", "blue_pick_4", "blue_pick_5", "red_pick_1", "red_pick_2", "red_pick_3", "red_pick_4", "red_pick_5"]
 
 def winner():
@@ -49,7 +62,7 @@ def winner_helper(win_label, conf_label):
         conf_label.configure(text = "Spell champions correctly", font = ("Arial", 17))
         return
     data_point = pd.DataFrame([champs], columns = positions)
-    confidence = model.predict(data_point)
+    confidence = model.predict(data_point, verbose=0)
     winner = [0 if val < 0.5 else 1 for val in confidence]
     if winner[0] == 0:
         winner = "Blue Side"
@@ -79,7 +92,7 @@ def update(position, icon, label, role):
     if result:
         image_input = get_champ_image(f"{id}")
     else:
-        image_input = Image.open("-1.png")
+        image_input = Image.open(resource_path("-1.png"))
     new_image = customtkinter.CTkImage(image_input, size = (50,50))
     icon.configure(image = new_image)
     icon.image = new_image
@@ -125,7 +138,7 @@ blue_top_label = customtkinter.CTkLabel(master = blue_top_input_frame, text = "T
 blue_top_label.pack()
 blue_top_pick = customtkinter.CTkEntry(master = blue_top_input_frame, placeholder_text = "Top...")
 blue_top_pick.pack()
-blue_top_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+blue_top_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 blue_top_icon = customtkinter.CTkLabel(master = blue_top_frame, image = blue_top_image, text = "")
 blue_top_icon.pack(side = "right", padx = 20)
 
@@ -139,7 +152,7 @@ blue_jg_label = customtkinter.CTkLabel(master = blue_jg_input_frame, text = "Jun
 blue_jg_label.pack()
 blue_jg_pick = customtkinter.CTkEntry(master = blue_jg_input_frame, placeholder_text = "Jungle...")
 blue_jg_pick.pack()
-blue_jg_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+blue_jg_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 blue_jg_icon = customtkinter.CTkLabel(master = blue_jg_frame, image = blue_jg_image, text = "")
 blue_jg_icon.pack(side = "right", padx = 20)
 
@@ -152,7 +165,7 @@ blue_mid_label = customtkinter.CTkLabel(master = blue_mid_input_frame, text = "M
 blue_mid_label.pack()
 blue_mid_pick = customtkinter.CTkEntry(master = blue_mid_input_frame, placeholder_text = "Mid...")
 blue_mid_pick.pack()
-blue_mid_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+blue_mid_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 blue_mid_icon = customtkinter.CTkLabel(master = blue_mid_frame, image = blue_mid_image, text = "")
 blue_mid_icon.pack(side = "right", padx = 20)
 
@@ -165,7 +178,7 @@ blue_bot_label = customtkinter.CTkLabel(master = blue_bot_input_frame, text = "B
 blue_bot_label.pack()
 blue_bot_pick = customtkinter.CTkEntry(master = blue_bot_input_frame, placeholder_text = "Bot...")
 blue_bot_pick.pack()
-blue_bot_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+blue_bot_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 blue_bot_icon = customtkinter.CTkLabel(master = blue_bot_frame, image = blue_bot_image, text = "")
 blue_bot_icon.pack(side = "right", padx = 20)
 
@@ -177,7 +190,7 @@ blue_supp_label = customtkinter.CTkLabel(master = blue_supp_input_frame, text = 
 blue_supp_label.pack()
 blue_supp_pick = customtkinter.CTkEntry(master = blue_supp_input_frame, placeholder_text = "Support...")
 blue_supp_pick.pack()
-blue_supp_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+blue_supp_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 blue_supp_icon = customtkinter.CTkLabel(master = blue_supp_frame, image = blue_supp_image, text = "")
 blue_supp_icon.pack(side = "right", padx = 20)
 
@@ -202,7 +215,7 @@ red_title.pack(side = "top", pady = 10)
 
 red_top_frame = customtkinter.CTkFrame(master = red_side, fg_color = "#F1B1B1")
 red_top_frame.pack(pady = 8)
-red_top_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+red_top_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 red_top_icon = customtkinter.CTkLabel(master = red_top_frame, image = red_top_image, text = "")
 red_top_icon.pack(side = "left", padx = 20)
 red_top_input_frame = customtkinter.CTkFrame(master = red_top_frame, fg_color = "#F1B1B1")
@@ -216,7 +229,7 @@ red_top_pick.pack()
 
 red_jg_frame = customtkinter.CTkFrame(master = red_side, fg_color = "#F1B1B1")
 red_jg_frame.pack(pady = 8)
-red_jg_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+red_jg_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 red_jg_icon = customtkinter.CTkLabel(master = red_jg_frame, image = red_jg_image, text = "")
 red_jg_icon.pack(side = "left", padx = 20)
 red_jg_input_frame = customtkinter.CTkFrame(master = red_jg_frame, fg_color = "#F1B1B1")
@@ -229,7 +242,7 @@ red_jg_pick.pack()
 
 red_mid_frame = customtkinter.CTkFrame(master = red_side, fg_color = "#F1B1B1")
 red_mid_frame.pack(pady = 8)
-red_mid_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+red_mid_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 red_mid_icon = customtkinter.CTkLabel(master = red_mid_frame, image = red_mid_image, text = "")
 red_mid_icon.pack(side = "left", padx = 20)
 red_mid_input_frame = customtkinter.CTkFrame(master = red_mid_frame, fg_color = "#F1B1B1")
@@ -242,7 +255,7 @@ red_mid_pick.pack()
 
 red_bot_frame = customtkinter.CTkFrame(master = red_side, fg_color = "#F1B1B1")
 red_bot_frame.pack(pady = 8)
-red_bot_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+red_bot_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 red_bot_icon = customtkinter.CTkLabel(master = red_bot_frame, image = red_bot_image, text = "")
 red_bot_icon.pack(side = "left", padx = 20)
 red_bot_input_frame = customtkinter.CTkFrame(master = red_bot_frame, fg_color = "#F1B1B1")
@@ -255,7 +268,7 @@ red_bot_pick.pack()
 
 red_supp_frame = customtkinter.CTkFrame(master = red_side, fg_color = "#F1B1B1")
 red_supp_frame.pack(pady = 8)
-red_supp_image = customtkinter.CTkImage(Image.open("-1.png"), size = (50,50))
+red_supp_image = customtkinter.CTkImage(Image.open(resource_path("-1.png")), size = (50,50))
 red_supp_icon = customtkinter.CTkLabel(master = red_supp_frame, image = red_supp_image, text = "")
 red_supp_icon.pack(side = "left", padx = 20)
 red_supp_input_frame = customtkinter.CTkFrame(master = red_supp_frame, fg_color = "#F1B1B1")
