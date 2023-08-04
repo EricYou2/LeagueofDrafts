@@ -59,3 +59,8 @@ The model is a predictive Tensorflow Keras sequential model.
 
 In the `model.fit` step, there are two parameters: `epochs` and `batch_size`. Feel free to play around and change the numbers to your liking, but be careful in choosing numbers that are too high in which the model might be overfit to the data and not actually perform well on new data.
 
+If you run into any issues with loading the program and get an error relating to the `metadata.pb` file, just run:
+```
+python model.py
+```
+This is will update that file and you should be able to run the program from then on.
